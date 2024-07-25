@@ -1,68 +1,62 @@
-import math
+from collections import deque, defaultdict
 
 
 def journeyToMoon(n, astronaut):
-    # Write your code here
-    astronautGroupNum = 0  # Group number of astronaut
-    astronautDict = {}  # AstronautDict for each group
-    totalPossible = 0  # Calculate the total possible without considering groups
-    totalPossibleConsider = 0
+    # create adjacency list of astronauts
+    graph = defaultdict(list)
 
-    # Make the dict for each astronaut
-    for i in range(n):
-        astronautDict[i] = 0
 
-    # Astronauts groups
-    astronautGroup = {}
+    # get the visited nodes in n astronauts
+    visited = [False] * n
 
-    # Traverse through the given astronauts list
-    for asto in astronaut:
-        # If both astronaut are not in a group
-        if astronautDict[asto[0]] == 0 and astronautDict[asto[1]] == 0:
-            astronautGroupNum += 1
-            astronautDict[asto[0]] = astronautGroupNum
-            astronautDict[asto[1]] = astronautGroupNum
+    # insert to the adjacency list
+    for a, b in astronaut:
+        graph[a].append(b)
+        graph[b].append(a)
 
-            # Calculate the number of groups in astronaut each group
-            astronautGroup[astronautGroupNum] = 2
+    # Function to perform BFS and find all astronauts
+    def bfs(start):
+        queue = deque([start])
+        count = 0
+        visited[start] = True
 
-        elif astronautDict[asto[0]] != 0 and astronautDict[asto[1]] != 0:
+        while queue:
+            node = queue.popleft()
+            count += 1
 
-            # if both have groups
-            astronautGroup[astronautDict[asto[0]]] += 2
-        else:
-            # if one has a group
-            if astronautDict[asto[0]] != 0:
-                astronautDict[asto[1]] = astronautDict[asto[0]]
+            for neighbour in graph[node]:
+                if not visited[neighbour]:
+                    queue.append(neighbour)
+                    visited[neighbour] = True
 
-                # add the group number +1
-                astronautGroup[astronautDict[asto[0]]] += 1
-            else:
-                astronautDict[asto[0]] = astronautDict[asto[1]]
+        return count
 
-                # add the group number +1
-                astronautGroup[astronautDict[asto[1]]] += 1
+    # list of number of connected components
+    counted_sizes = []
 
-    # Add groups to not in the astronautGroup
-    for nums in astronautDict:
-        if astronautDict[nums] == 0:
-            astronautGroupNum += 1
+    # perform bfs to find connected counts
+    for astronauts in range(n):
+        if not visited[astronauts]:
+            size = bfs(astronauts)
+            counted_sizes.append(size)
+    # Calculate the number of valid pairs
+    total_pairs = 0
+    sum_of_sizes = 0
+    for size in counted_sizes:
+        total_pairs += size * (n - sum_of_sizes - size)
+        sum_of_sizes += size
 
-            # add to the dictionary
-            astronautDict[astronautGroupNum] = 1
-
-            # add to the groups
-            astronautGroup[astronautGroupNum] = 1
-
-    # Calculate total possible ways
-    for i in astronautGroup:
-        if astronautGroup[i] > 1:
-            totalPossibleConsider += math.ceil(astronautGroup[i]*(astronautGroup[i]-1)/2)
-
-    totalPossible = n * (n-1)/2
-
-    return totalPossibleConsider - totalPossible
+    return total_pairs
 
 
 if __name__ == '__main__':
-    journeyToMoon(6, [[0, 1], [2, 3], [0, 4]])
+    print(journeyToMoon(6, [[0, 1], [2, 3], [0, 4]]))
+
+    # calculate the count of possible pair
+    size = 0
+    possible_pairs = 0
+    pair = {1: 3, 2: 2, 3: 4, 4:1}
+    total_number_elem = 10
+    for i in pair:
+        possible_pairs += pair[i]*(total_number_elem - size - pair[i])
+        size += pair[i]
