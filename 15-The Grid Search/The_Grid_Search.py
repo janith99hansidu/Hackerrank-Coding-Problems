@@ -11,12 +11,10 @@ def gridSearch(G, P):
     do_not_match = False
 
     # How many steps can take in row and column
-    step_row = row_g - row_p
-    step_column = column_g - column_p
+    step_row = row_g - row_p + 1
+    step_column = column_g - column_p + 1
 
-    # print(G[0][1])
-
-    # # traverse to starting position in row G
+    # traverse to starting position in row G
     for i in range(step_row):
         for j in range(step_column):
             # reset the do_not_match flag
