@@ -2,36 +2,38 @@ def almostSorted(arr):
     sorted_arr = sorted(arr)
 
     if sorted_arr == arr:
+        print("yes")
         return
 
-    # make start and end index = -1
-    start = end = 0
-    check_end = False
+    start = end = -1
 
-    # traverse through array and find start and end positions
+    # Traverse through the array to find start and end positions
+    for i in range(len(arr) - 1):
+        if arr[i] > arr[i + 1]:
+            start = i
+            break
+
     for i in range(len(arr) - 1, 0, -1):
-        # if find the start position check for the end
-        if not check_end:
-            if arr[i] < arr[i - 1]:
-                start = i
-                check_end = True
-        # check for the end
-        if check_end:
-            if arr[i] > arr[i - 1]:
-                end = i
+        if arr[i] < arr[i - 1]:
+            end = i
+            break
 
-    # if reverse the sting and check whether equal to the sorted arr
-    reverse_arr = arr[:end] + list(reversed(arr[end:start + 1])) + arr[start + 1:]
+    # Attempt to swap
     arr[start], arr[end] = arr[end], arr[start]
 
     if arr == sorted_arr:
         print("yes")
         print("swap", start + 1, end + 1)
-    elif reverse_arr == sorted_arr:
-        print("yes")
-        print("reverse", end + 1, start + 1)
     else:
-        print("no")
+        # Revert swap and attempt reverse
+        arr[start], arr[end] = arr[end], arr[start]
+        reverse_arr = arr[:start] + list(reversed(arr[start:end + 1])) + arr[end + 1:]
+
+        if reverse_arr == sorted_arr:
+            print("yes")
+            print("reverse", start + 1, end + 1)
+        else:
+            print("no")
 
 
 if __name__ == '__main__':
