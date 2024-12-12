@@ -29,14 +29,29 @@ def bubble_swap(numbers, current_idx, target_idx):
     if remaining_idx == 1:
         # if there is one position to be swapped swap that element
         temp = numbers[current_pos_idx]
-        
-    
+        numbers[current_pos_idx] = numbers[current_pos_idx + 1]
+        numbers[current_pos_idx + 1] = numbers[current_pos_idx - 1]
+        numbers[current_pos_idx - 1] = temp        
+
         
     
 def larrysArray(A):
     # test bubble_swap function 
-    bubble_swap(A, 6, 1)
-    print(A)
+    # bubble_swap(A, 6, 1)
+    # print(A)
+    
+    # do the bubble_swap for each util the n-2
+    for i in range(1, len(A) - 2):
+        # if the number of the i-1 position doesn't match to the i
+        # do the swapping
+        if A[i - 1] != i:
+            bubble_swap(A, A.index(i), i - 1)
+    
+    # Check the condition for the last three numbers
+    a, b, c = A[-3], A[-2], A[-1]
+    if (a < b < c) or (b < c < a) or (c < a < b):
+        return "YES"
+    return "NO"
      
 if __name__ == '__main__':
     
